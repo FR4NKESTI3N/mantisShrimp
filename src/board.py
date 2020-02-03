@@ -1,6 +1,6 @@
 __version__ = "0.0.01"
 
-from src.exceptions import PieceNotFoundException, InvalidArgumentException
+from src.exceptions import PieceNotFoundException, InvalidArgumentException, InvalidFenException
 from src.patterns import singleton
 
 Color = bool
@@ -64,6 +64,7 @@ class Piece:
     def __init__(self):
         self.black = BlackPiece()
         self.white = WhitePiece()
+
     def __getitem__(self, args):
         if args == 'white':
             return self.white
@@ -71,7 +72,12 @@ class Piece:
             return  self.black
         else:
             raise InvalidArgumentException(args)
-    # def isWhite(self):
+
+    def whitePieces(self, c):
+        return [P, N, B, R, Q, K]
+
+    def blackPieces(self, c):
+        return [p, n, b, r, q, k]
 PIECE = Piece()
 
 class Board:
@@ -112,16 +118,41 @@ class Board:
             pass
 
 
+    def __getitem__(self, an):
+        """Designed to work with Algebraic Notation"""
+
+        if True:
+            # Replace with checks for AN validity
+            pass
+
+        file = ord(an[0]) - ord('a')
+        rank = int(an[1]) - 1
+        return self.board[rank][file]
+
+    def __setitem__(self, an, value):
+        """Designed to work with Algebraic Notation"""
+
+        if true:
+            # Replace with checks for AN validity
+            pass
+
+        file = ord(an[0]) - ord('a')
+        rank = int(an[1]) - 1
+        self.board[rank][file] = value
+
     def __repr__(self):
         for rank in range(7, -1, -1):
             print('|', rank + 1, sep='', end='||')
             for file in range(8):
                 print(self.board[rank][file], end='|')
+                # an = chr(ord('a') + file) + str(rank + 1)
+                # print(self[an], end='|')
+
             print('')
         print('  ', '-' * 17)
         print('   |', end='')
-        for file in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']:
-            print(file, end='|')
+        for file in range(8):
+            print(chr(97 + file), end='|')
         print('\n     Turn = ' + COLOR[self.turn], end='')
         return ''
 
@@ -131,9 +162,21 @@ class Board:
 
         return False
 
-    def readFEN(self, fen):
-
+    def validateFEN(self, fen):
+        # for now, assuming that GUI gives correct FEN string
         pass
+
+        return True
+
+
+
+    # add comments
+    #
+    #
+    def readFEN(self, fen):
+        if not self.validateFEN(fen):
+            raise InvalidFenException(fen)
+
         self.board = [['-' for i in range(8)] for j in range(8)]
         fen = fen.split(' ')
         pos = fen[0].split('/')
@@ -233,6 +276,24 @@ class Board:
 
         return fen
 
+    def getNextPseudoLegalMoves(self):
+        pass
+
+    def isLegalMove(self, pos1, pos2):
+        # Checks if the transition from position 1 to 2 is legal
+        # used by getLegalMoves
+        pass
+
+    def getPawnLegalMoves(self, c):
+        pass
+
+    def getNextLegalMoves(self):
+        # pos1 = self.board
+        for rank in range(8):
+            for file in range(8):
+                if pos1[rank][file] != '.':
+                    if self.turn == WHITE and pos1[rank][file] in PIECE.whitePieces():
+                        pass
 
 class Game:
     def __init__(self):
@@ -259,5 +320,9 @@ if __name__ == '__main__':
     start.readFEN('rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2')
     print(start)
     print(start.writeFEN())
-
-
+    start.readFEN('r1bqkb1r/pp1ppppp/2n2n2/2p5/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 4 3')
+    print(start)
+    print(start.writeFEN())
+    start.readFEN('2kr1b1r/pp2pppp/2n1Pn2/2p5/2B5/1P3N2/P1Pq1PPP/RNBQ1RK1 w - - 1 5')
+    print(start)
+    print(start.writeFEN())
