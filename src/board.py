@@ -117,11 +117,18 @@ class Board:
         else:
             pass
 
+    def isLegalAN(self, an):
+        if (len(an) != 2
+            or ord('a') > ord(an[0])
+            or ord('h') < ord(an[0])
+            or 1 > int(an[1]) or 8 < int(an[1])) :
+            return False
+        return True
 
     def __getitem__(self, an):
         """Designed to work with Algebraic Notation"""
 
-        if True:
+        if self.isLegalAN(an):
             # Replace with checks for AN validity
             pass
 
@@ -132,7 +139,7 @@ class Board:
     def __setitem__(self, an, value):
         """Designed to work with Algebraic Notation"""
 
-        if true:
+        if self.isLegalAN(an):
             # Replace with checks for AN validity
             pass
 
@@ -144,9 +151,9 @@ class Board:
         for rank in range(7, -1, -1):
             print('|', rank + 1, sep='', end='||')
             for file in range(8):
-                print(self.board[rank][file], end='|')
-                # an = chr(ord('a') + file) + str(rank + 1)
-                # print(self[an], end='|')
+                # print(self.board[rank][file], end='|')
+                an = chr(ord('a') + file) + str(rank + 1)
+                print(self[an], end='|')
 
             print('')
         print('  ', '-' * 17)
@@ -155,6 +162,9 @@ class Board:
             print(chr(97 + file), end='|')
         print('\n     Turn = ' + COLOR[self.turn], end='')
         return ''
+
+    def anFromPos(self, rank, file):
+        an = ord('a') + file
 
     def inCheck(self):
 
@@ -284,8 +294,8 @@ class Board:
         # used by getLegalMoves
         pass
 
-    def getPawnLegalMoves(self, c):
-        pass
+    def getPawnPseudoLegalMoves(self, c):
+
 
     def getNextLegalMoves(self):
         # pos1 = self.board
@@ -294,6 +304,9 @@ class Board:
                 if pos1[rank][file] != '.':
                     if self.turn == WHITE and pos1[rank][file] in PIECE.whitePieces():
                         pass
+
+
+
 
 class Game:
     def __init__(self):
